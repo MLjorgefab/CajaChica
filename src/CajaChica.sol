@@ -20,10 +20,7 @@ contract CajaChica {
 
     function withdraw() public {
         require(balances[msg.sender] > 0, "Insufficient balance");
-        require(
-            balances[msg.sender] >= (s_totalBalance * RESERVE_PERCENTAGE) / 100,
-            "Insufficient balance"
-        );
+        require(balances[msg.sender] >= (s_totalBalance * RESERVE_PERCENTAGE) / 100, "Insufficient balance");
     }
 
     // Function to check the contract's actual ETH balance

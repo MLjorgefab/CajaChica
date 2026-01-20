@@ -1,19 +1,24 @@
-## Foundry
+# CajaChica
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+A simple Ethereum vault contract managed with Foundry.
 
-Foundry consists of:
+## Overview
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+**CajaChica** ("Petty Cash") is a vault contract that allows users to deposit and withdraw ETH. 
 
-## Documentation
+### Reserve Mechanism
+The contract enforces a unique reserve rule for withdrawals:
+- Users can deposit any amount of ETH.
+- To withdraw, a user's individual balance must be at least **10%** of the total contract balance (`s_totalBalance`).
 
-https://book.getfoundry.sh/
+## Project Structure
 
-## Usage
+- `src/CajaChica.sol`: The main contract.
+- `test/CajaChicaTest.t.sol`: Tests for the contract.
+
+## Foundry Usage
+
+This project uses [Foundry](https://book.getfoundry.sh/).
 
 ### Build
 
@@ -33,34 +38,8 @@ $ forge test
 $ forge fmt
 ```
 
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
 ### Deploy
 
 ```shell
 $ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
 ```
