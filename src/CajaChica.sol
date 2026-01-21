@@ -19,21 +19,33 @@ contract CajaChica {
     }
 
     function withdraw(uint256 _amount) public {
+        // Step 1: Cache storage variables (Gas Optimization)
+        // Reads from storage (expensive) to stack (cheap)
+        uint256 userBalance = balances[msg.sender];
+        uint256 totalBalance = s_totalBalance;
+
         // Check 1: User balance
-        require(balances[msg.sender] >= _amount, "Not enough balance");
+        require(userBalance >= _amount, "Not enough balance");
 
         // Phase 2 - Act: The Reserve Check
+        // Rule: Cannot withdraw more than 10% of total liquidity at once
         require(
-            _amount >= (s_totalBalance * RESERVE_PERCENTAGE) / 100,
-            "Insufficient balance"
+            _amount <= (totalBalance * RESERVE_PERCENTAGE) / 100,
+            "Exceeds max withdrawal limit (10%)"
         );
 
         // Effects
-        balances[msg.sender] -= _amount;
-        s_totalBalance -= _amount;
+        // Update local stack variables
+        userBalance -= _amount;
+        totalBalance -= _amount;
+
+        // Write back to storage once (SSTORE)
+        balances[msg.sender] = userBalance;
+        s_totalBalance = totalBalance;
 
         // Interactions
-        payable(msg.sender).transfer(_amount);
+        (bool success, ) = payable(msg.sender).call{value: _amount}("");
+        require(success, "Transfer failed");
     }
 
     // Function to check the contract's actual ETH balance
